@@ -1,0 +1,6 @@
+@Unpublished{wellbeing_and_machine_learning2024,
+    Title  = {This project is centered around exploring the application of machine learning techniques to predict human wellbeing.},
+    Author = {William Backes},
+    Year   = {2024},
+    Url    = {https://github.com/willbackes/wellbeing_and_machine_learning}
+}
