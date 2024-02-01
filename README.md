@@ -68,10 +68,8 @@ To build the project, type
 $ pytask
 ```
 
-### Credits
+## Credits
 
 # This project was created with [cookiecutter](https://github.com/audreyr/cookiecutter) and the [econ-project-templates](https://github.com/OpenSourceEconomics/econ-project-templates).
 
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/EVOsE4mq)
-
-> > > > > > > 8ae3243b0cc493cda6539fd33b67219aaf40ff36
