@@ -1,5 +1,54 @@
 # Comparative Analysis of Predictive Models on Human Wellbeing
 
+This project is centered around exploring the application of machine learning techniques
+to predict human wellbeing, comparing traditional econometric methods, such as Ordinary
+Least Squares (OLS), with modern algorithms like Least Absolute Shrinkage and Selection
+Operator (LASSO), Random Forests (RF), and Gradient Boosting (GB). Inspired by the work
+of Oparina et al. (2023), our aim is to assess the effectiveness of various models in
+predicting human wellbeing.
+
+### Data
+
+The dataset for this project is sourced from the German Socio-Economic Panel (SOEP),
+covering the years 2010 to 2018. This timeframe aligns with the original paper, and
+flexibility is maintained to extend it as long as data remains available.
+
+### Data Management and Variables of Interest
+
+Focus will be placed on the "restricted set" mentioned in the paper, including variables
+such as Age, Area of Residence, BMI, Disability Status, Education, Labour-force status,
+Log HH income, Ethnicity/Migration Background, Health, Housing Status, Marital Status,
+Month of Interview, Number of children in HH, Number of people in HH, Religion, Sex, and
+Working Hours. Categorical data will be transformed into sets of dummy variables for
+analysis.
+
+### Analysis
+
+a) Generate descriptive statistics for the variables of interest. b) Utilize the four
+algorithms to regress the variables of interest against life satisfaction. c) Compute
+performance metrics including R², Mean Squared Error (MSE), Mean Absolute Percentage
+Error, and Mean Absolute Error (MAE). d) Compare performance metrics across the
+different models.
+
+### Figures/Final Analysis
+
+Produce figures akin to those presented in Oparina et al. (2023), encompassing model
+performance, performance improvement through the use of machine learning, variable
+importance, and wellbeing patterns concerning age and income.
+
+### Additional
+
+a) Consider expanding the dataset by including other years for a more comprehensive
+analysis. b) Explore and apply additional machine learning algorithms beyond the ones
+mentioned in the original paper. c) Compare the performance of these new algorithms with
+those previously examined.
+
+### References
+
+Oparina, E., Kaiser, C., Gentile, N., Tkatchenko, A., Clark, A. E., De Neve, J. E., &
+D'Ambrosio, C. (2023). Machine Learning in the Prediction of Human Wellbeing. Working
+Paper
+[see](https://drive.google.com/file/d/1vRzDC3XpDMG81KQ8jtkgmO3G0nTPM_WH/view?usp=share_link).
 
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/willbackes/wellbeing_and_machine_learning/main.svg)](https://results.pre-commit.ci/latest/github/willbackes/wellbeing_and_machine_learning/main)
 [![image](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -19,7 +68,7 @@ To build the project, type
 $ pytask
 ```
 
-## Credits
+### Credits
 
 This project was created with [cookiecutter](https://github.com/audreyr/cookiecutter)
 and the
