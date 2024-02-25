@@ -9,6 +9,8 @@ PAPER_DIR = SRC.joinpath("..", "..", "paper").resolve()
 
 GROUPS = ["marital_status", "qualification"]
 
+DATA = {"household": ["hbrutto", "hl", "hgen"], "individual": ["pgen", "pl", "ppathl"]}
+
 COLS = {
     "hbrutto": ["cid", "syear", "hhgr"],
     "hl": ["cid", "syear", "hlf0001_v3"],
