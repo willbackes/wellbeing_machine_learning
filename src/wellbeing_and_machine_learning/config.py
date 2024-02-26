@@ -12,12 +12,13 @@ GROUPS = ["marital_status", "qualification"]
 DATA = {"household": ["hbrutto", "hl", "hgen"], "individual": ["pgen", "pl", "ppathl"]}
 
 COLS = {
-    "hbrutto": ["cid", "syear", "hhgr"],
-    "hl": ["cid", "syear", "hlf0001_v3"],
-    "hgen": ["cid", "syear", "hghinc"],
-    "pgen": ["pid", "cid", "syear", "pgbilzeit", "pglfs", "pgfamstd"],
+    "hbrutto": ["hid", "cid", "syear", "hhgr"],
+    "hl": ["hid", "cid", "syear", "hlf0001_v3"],
+    "hgen": ["hid", "cid", "syear", "hghinc"],
+    "pgen": ["pid", "hid", "cid", "syear", "pgbilzeit", "pglfs", "pgfamstd"],
     "pl": [
         "pid",
+        "hid",
         "cid",
         "syear",
         "ple0006",
@@ -29,7 +30,16 @@ COLS = {
         "plb0178",
         "plh0182",
     ],
-    "ppathl": ["pid", "cid", "syear", "gebjahr", "birthregion", "migback", "sex"],
+    "ppathl": [
+        "pid",
+        "hid",
+        "cid",
+        "syear",
+        "gebjahr",
+        "birthregion",
+        "migback",
+        "sex",
+    ],
 }
 
 __all__ = ["BLD", "SRC", "TEST_DIR", "GROUPS"]
