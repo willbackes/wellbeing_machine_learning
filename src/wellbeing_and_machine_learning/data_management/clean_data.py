@@ -63,13 +63,14 @@ def clean_data(merged_data):
     return df
 
 
-def clean_categorical_to_dummy(data, columns):
+def convert_categorical_to_dummy(data, columns):
+    df = data.drop(columns, axis=1)
     encoder = OneHotEncoder(sparse_output=False)
     df_dummy = pd.DataFrame(
         encoder.fit_transform(data[columns]),
         columns=encoder.get_feature_names_out(columns),
+        index=data.index,
     )
-    df = data.drop(columns, axis=1)
     return pd.concat([df, df_dummy], axis=1)
 
 
