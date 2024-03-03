@@ -29,9 +29,6 @@ def clean_data(merged_data):
         NA,
     )
     df["agesquared"] = df["age"] ** 2
-    df["weight"] = valid_data["ple0007"].astype(pd.Float64Dtype())
-    df["height"] = valid_data["ple0006"].astype(pd.Float64Dtype()) / 100
-    df["bmi_computed"] = df["weight"] / (df["height"] ** 2)
     df["bmi"] = _positive_number_only(valid_data["bmi"])
     df["education"] = valid_data["pgbilzeit"].astype(pd.Float32Dtype())
     df["logincome"] = np.log(valid_data["hghinc"])
