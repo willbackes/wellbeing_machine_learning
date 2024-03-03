@@ -7,7 +7,6 @@ BLD = SRC.joinpath("..", "..", "bld").resolve()
 TEST_DIR = SRC.joinpath("..", "..", "tests").resolve()
 PAPER_DIR = SRC.joinpath("..", "..", "paper").resolve()
 
-GROUPS = ["marital_status", "qualification"]
 
 DATA = {
     "household": ["hbrutto", "hl", "hgen"],
@@ -44,4 +43,13 @@ COLS = {
     "health": ["pid", "syear", "bmi"],
 }
 
-__all__ = ["BLD", "SRC", "TEST_DIR", "GROUPS"]
+CATEGORICAL = [
+    "smonth",
+    "birthregion",
+    "migback",
+    "housingstatus",
+    "maritalstatus",
+    "religion",
+]
+
+__all__ = ["BLD", "SRC", "TEST_DIR", "PAPER_DIR", "DATA", "COLS"]

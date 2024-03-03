@@ -1,5 +1,6 @@
 import pandas as pd
 from pandas import NA
+from sklearn.preprocessing import OneHotEncoder
 
 
 def clean_data(merged_data):
@@ -60,6 +61,16 @@ def clean_data(merged_data):
     df["lifesatisfaction"] = _extract_number_from_brackets(valid_data["plh0182"])
 
     return df
+
+
+def clean_categorical_to_dummy(data, columns):
+    encoder = OneHotEncoder(sparse_output=False)
+    df_dummy = pd.DataFrame(
+        encoder.fit_transform(data[columns]),
+        columns=encoder.get_feature_names_out(columns),
+    )
+    df = data.drop(columns, axis=1)
+    return pd.concat([df, df_dummy], axis=1)
 
 
 def _clean_invalid_data(data):
