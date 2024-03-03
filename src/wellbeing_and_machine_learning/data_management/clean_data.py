@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from pandas import NA
 from sklearn.preprocessing import OneHotEncoder
@@ -21,8 +22,6 @@ def clean_data(merged_data):
     df["birthyear"] = _positive_number_only(valid_data["gebjahr"]).astype(
         pd.UInt16Dtype(),
     )
-    import numpy as np
-
     df["age"] = np.where(
         (valid_data["syear"] - valid_data["gebjahr"]) < 130,
         valid_data["syear"] - valid_data["gebjahr"],
