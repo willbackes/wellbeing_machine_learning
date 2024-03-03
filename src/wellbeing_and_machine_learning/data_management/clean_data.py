@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from pandas import NA
+from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder
 
 
@@ -22,11 +23,7 @@ def clean_data(merged_data):
     df["birthyear"] = _positive_number_only(valid_data["gebjahr"]).astype(
         pd.UInt16Dtype(),
     )
-    df["age"] = np.where(
-        (valid_data["syear"] - valid_data["gebjahr"]) < 130,
-        valid_data["syear"] - valid_data["gebjahr"],
-        NA,
-    )
+    df["age"] = np.subtract(df["syear"], df["birthyear"])
     df["agesquared"] = df["age"] ** 2
     df["bmi"] = _positive_number_only(valid_data["bmi"])
     df["education"] = valid_data["pgbilzeit"].astype(pd.Float32Dtype())
@@ -68,6 +65,17 @@ def convert_categorical_to_dummy(data, columns):
         index=data.index,
     )
     return pd.concat([df, df_dummy], axis=1)
+
+
+def observed_means_for_missing_values(data, columns):
+    df = data.drop(columns, axis=1)
+    imputer = SimpleImputer(strategy="mean")
+    df_continuous = pd.DataFrame(
+        imputer.fit_transform(data[columns]),
+        columns=columns,
+        index=data.index,
+    )
+    return pd.concat([df, df_continuous], axis=1)
 
 
 def _clean_invalid_data(data):

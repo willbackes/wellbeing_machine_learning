@@ -52,4 +52,17 @@ CATEGORICAL = [
     "religion",
 ]
 
+CONTINUOUS = [
+    "age",
+    "agesquared",
+    "bmi",
+    "education",
+    "logincome",
+    "health",
+    "workinghours",
+    "numberofpeople",
+    "numberofchildren",
+    "lifesatisfaction",
+]
+
 __all__ = ["BLD", "SRC", "TEST_DIR", "PAPER_DIR", "DATA", "COLS"]
