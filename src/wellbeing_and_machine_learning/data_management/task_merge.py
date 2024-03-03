@@ -30,13 +30,15 @@ def task_merge_household_data(
 
 def task_merge_individual_data(
     depends_on=individual_data_dependency,
+    health_data=BLD / "data" / "unzip" / "health.dta",
     produces=BLD / "data" / "individual_data.pkl",
 ):
     individual_data = [
         pd.read_stata(depends_on[data], columns=COLS[data])
         for data in DATA["individual"]
     ]
-    merge_individual_df = merge_individual_data(individual_data)
+    health_df = pd.read_stata(health_data, columns=COLS["health"])
+    merge_individual_df = merge_individual_data(individual_data, health_df)
     merge_individual_df.to_pickle(produces)
 
 

@@ -9,6 +9,9 @@ DATA_NAMES = {
     "pgen.dta",
     "pl.dta",
     "ppathl.dta",
+    "kidlong.dta",
+    "pequiv.dta",
+    "health.dta",
 }
 
 PRODUCES = {name: BLD / "data" / "unzip" / name for name in DATA_NAMES}

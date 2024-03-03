@@ -12,7 +12,7 @@ def merge_household_data(household_data):
     return merge_household_df
 
 
-def merge_individual_data(individual_data):
+def merge_individual_data(individual_data, health_data):
     merge_individual_df = individual_data[0]
     for df in individual_data[1:]:
         merge_individual_df = merge_individual_df.merge(
@@ -20,7 +20,12 @@ def merge_individual_data(individual_data):
             on=["pid", "hid", "syear"],
             how="outer",
         )
-    return merge_individual_df
+    return pd.merge(
+        merge_individual_df,
+        health_data,
+        on=["pid", "syear"],
+        how="left",
+    )
 
 
 def merge_individual_and_household(household_df, individual_df):
