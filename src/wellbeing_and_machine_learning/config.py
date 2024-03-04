@@ -65,4 +65,6 @@ CONTINUOUS = [
     "lifesatisfaction",
 ]
 
+BINARY = ["disability", "labourstatus", "sex"]
+
 __all__ = ["BLD", "SRC", "TEST_DIR", "PAPER_DIR", "DATA", "COLS"]

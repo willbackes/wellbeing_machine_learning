@@ -57,25 +57,21 @@ def clean_data(merged_data):
 
 
 def convert_categorical_to_dummy(data, columns):
-    df = data.drop(columns, axis=1)
     encoder = OneHotEncoder(sparse_output=False)
-    df_dummy = pd.DataFrame(
+    return pd.DataFrame(
         encoder.fit_transform(data[columns]),
         columns=encoder.get_feature_names_out(columns),
         index=data.index,
     )
-    return pd.concat([df, df_dummy], axis=1)
 
 
 def observed_means_for_missing_values(data, columns):
-    df = data.drop(columns, axis=1)
     imputer = SimpleImputer(strategy="mean")
-    df_continuous = pd.DataFrame(
+    return pd.DataFrame(
         imputer.fit_transform(data[columns]),
         columns=columns,
         index=data.index,
     )
-    return pd.concat([df, df_continuous], axis=1)
 
 
 def _clean_invalid_data(data):

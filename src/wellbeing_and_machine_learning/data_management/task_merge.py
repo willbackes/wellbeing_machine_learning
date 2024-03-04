@@ -18,7 +18,7 @@ individual_data_dependency = {
 
 def task_merge_household_data(
     depends_on=household_data_dependency,
-    produces=BLD / "data" / "household_data.pkl",
+    produces=BLD / "data" / "household_raw.pkl",
 ):
     household_data = [
         pd.read_stata(depends_on[data], columns=COLS[data])
@@ -31,7 +31,7 @@ def task_merge_household_data(
 def task_merge_individual_data(
     depends_on=individual_data_dependency,
     health_data=BLD / "data" / "unzip" / "health.dta",
-    produces=BLD / "data" / "individual_data.pkl",
+    produces=BLD / "data" / "individual_raw.pkl",
 ):
     individual_data = [
         pd.read_stata(depends_on[data], columns=COLS[data])
@@ -43,9 +43,9 @@ def task_merge_individual_data(
 
 
 def task_merge_individual_and_household(
-    household_data=BLD / "data" / "household_data.pkl",
-    individual_data=BLD / "data" / "individual_data.pkl",
-    produces=BLD / "data" / "merge_individual_and_household.pkl",
+    household_data=BLD / "data" / "household_raw.pkl",
+    individual_data=BLD / "data" / "individual_raw.pkl",
+    produces=BLD / "data" / "individual_and_household_raw.pkl",
 ):
     household_df = pd.read_pickle(household_data)
     individual_df = pd.read_pickle(individual_data)
