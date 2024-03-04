@@ -1,4 +1,4 @@
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.linear_model import Lasso, LinearRegression
 from sklearn.metrics import r2_score
 from sklearn.model_selection import GridSearchCV, train_test_split
@@ -68,6 +68,39 @@ def random_forest_regression_by_year(
         rf_model.fit(X, Y)
         rf_model.fit(X_train, Y_train)
         Y_pred = rf_model.predict(X_test)
+        r_squared = r2_score(Y_test, Y_pred)
+        res[year] = r_squared
+    return res
+
+
+def gradient_boosting_regression_by_year(
+    data,
+    learning_rate=0.005,
+    n_estimators=100,
+    max_depth=8,
+    random_state=42,
+):
+    res = {}
+    for year in data["syear"].unique():
+        yearly_data = data[data["syear"] == year]
+        X = yearly_data.drop(["lifesatisfaction"], axis=1)
+        Y = yearly_data["lifesatisfaction"]
+
+        X_train, X_test, Y_train, Y_test = train_test_split(
+            X,
+            Y,
+            test_size=0.2,
+            random_state=42,
+        )
+
+        gb_model = GradientBoostingRegressor(
+            learning_rate=learning_rate,
+            n_estimators=n_estimators,
+            max_depth=max_depth,
+            random_state=random_state,
+        )
+        gb_model.fit(X_train, Y_train)
+        Y_pred = gb_model.predict(X_test)
         r_squared = r2_score(Y_test, Y_pred)
         res[year] = r_squared
     return res
