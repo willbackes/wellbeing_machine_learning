@@ -67,6 +67,8 @@ CONTINUOUS = [
 
 BINARY = ["disability", "labourstatus", "sex"]
 
+ALGORITHMS = ["ols", "lasso", "random_forest", "gradient_boosting"]
+
 __all__ = [
     "BLD",
     "SRC",
@@ -77,4 +79,5 @@ __all__ = [
     "CATEGORICAL",
     "CONTINUOUS",
     "BINARY",
+    "ALGORITHMS",
 ]
