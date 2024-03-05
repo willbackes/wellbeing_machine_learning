@@ -6,14 +6,14 @@ from wellbeing_and_machine_learning.analysis.algorithms import (
 )
 from wellbeing_and_machine_learning.config import ALGORITHMS, BLD
 
-for algo in ALGORITHMS:
+for algorithm in ALGORITHMS:
 
-    @pytask.task(id=algo)
+    @pytask.task(id=algorithm)
     def task_algo_performance_by_year(
         depends_on=BLD / "data" / "clean_data_converted.pkl",
-        algorithm=algo,
-        produces=BLD / "analysis" / f"{algo}_performance_by_year.pkl",
+        algo=algorithm,
+        produces=BLD / "analysis" / f"{algorithm}_performance_by_year.pkl",
     ):
         data = pd.read_pickle(depends_on)
-        r_squared = algo_performance_by_year(data, algorithm)
+        r_squared = algo_performance_by_year(data, algo)
         r_squared.to_pickle(produces)
