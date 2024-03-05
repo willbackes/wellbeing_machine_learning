@@ -63,7 +63,7 @@ def algo_performance_by_year(data, algo):
     return pd.DataFrame(results)
 
 
-def algo_performance_var_importance(data, algo):
+def algo_performance_and_variable_importance(data, algo):
     results = {
         "r_squared": None,
         "permutation_importance": None,
@@ -133,19 +133,7 @@ def _ols_regression(X_train, X_test, Y_train, Y_test, r_squared_only):
     else:
         r_squared = r2_score(Y_test, Y_pred)
 
-        perm_importance = permutation_importance(
-            ols_model,
-            X_test,
-            Y_test,
-            n_repeats=30,
-            random_state=42,
-        )
-        variable_name = list(X_test.columns)
-        perm_importance_values = perm_importance.importances_mean
-        perm_importance_df = pd.DataFrame(
-            {"variable_name": variable_name, "PI": perm_importance_values},
-        )
-        perm_importance_df = perm_importance_df.sort_values(by="PI", ascending=False)
+        perm_importance_df = _variable_importance(ols_model, X_test, Y_test)
 
         prediction_df = pd.DataFrame(
             {"Y_pred": Y_pred, "income": X_test["logincome"], "age": X_test["age"]},
@@ -175,19 +163,7 @@ def _lasso_regression(X_train, X_test, Y_train, Y_test, r_squared_only, alphas=N
     else:
         r_squared = r2_score(Y_test, Y_pred)
 
-        perm_importance = permutation_importance(
-            best_lasso_model,
-            X_test,
-            Y_test,
-            n_repeats=30,
-            random_state=42,
-        )
-        variable_name = list(X_test.columns)
-        perm_importance_values = perm_importance.importances_mean
-        perm_importance_df = pd.DataFrame(
-            {"variable_name": variable_name, "PI": perm_importance_values},
-        )
-        perm_importance_df = perm_importance_df.sort_values(by="PI", ascending=False)
+        perm_importance_df = _variable_importance(best_lasso_model, X_test, Y_test)
 
         prediction_df = pd.DataFrame(
             {"Y_pred": Y_pred, "income": X_test["logincome"], "age": X_test["age"]},
@@ -219,19 +195,7 @@ def _random_forest_regression(
     else:
         r_squared = r2_score(Y_test, Y_pred)
 
-        perm_importance = permutation_importance(
-            rf_model,
-            X_test,
-            Y_test,
-            n_repeats=30,
-            random_state=42,
-        )
-        variable_name = list(X_test.columns)
-        perm_importance_values = perm_importance.importances_mean
-        perm_importance_df = pd.DataFrame(
-            {"variable_name": variable_name, "PI": perm_importance_values},
-        )
-        perm_importance_df = perm_importance_df.sort_values(by="PI", ascending=False)
+        perm_importance_df = _variable_importance(rf_model, X_test, Y_test)
 
         prediction_df = pd.DataFrame(
             {"Y_pred": Y_pred, "income": X_test["logincome"], "age": X_test["age"]},
@@ -265,22 +229,26 @@ def _gradient_boosting_regression(
     else:
         r_squared = r2_score(Y_test, Y_pred)
 
-        perm_importance = permutation_importance(
-            gb_model,
-            X_test,
-            Y_test,
-            n_repeats=30,
-            random_state=42,
-        )
-        variable_name = list(X_test.columns)
-        perm_importance_values = perm_importance.importances_mean
-        perm_importance_df = pd.DataFrame(
-            {"variable_name": variable_name, "PI": perm_importance_values},
-        )
-        perm_importance_df = perm_importance_df.sort_values(by="PI", ascending=False)
+        perm_importance_df = _variable_importance(gb_model, X_test, Y_test)
 
         prediction_df = pd.DataFrame(
             {"Y_pred": Y_pred, "income": X_test["logincome"], "age": X_test["age"]},
         )
 
         return r_squared, perm_importance_df, prediction_df
+
+
+def _variable_importance(model, X_test, Y_test):
+    perm_importance = permutation_importance(
+        model,
+        X_test,
+        Y_test,
+        n_repeats=30,
+        random_state=42,
+    )
+    variable_name = list(X_test.columns)
+    perm_importance_values = perm_importance.importances_mean
+    perm_importance_df = pd.DataFrame(
+        {"variable_name": variable_name, "PI": perm_importance_values},
+    )
+    return perm_importance_df.sort_values(by="PI", ascending=False)
