@@ -69,6 +69,8 @@ BINARY = ["disability", "labourstatus", "sex"]
 
 ALGORITHMS = ["ols", "lasso", "random_forest", "gradient_boosting"]
 
+PLOTS = ["age", "income"]
+
 __all__ = [
     "BLD",
     "SRC",
@@ -80,4 +82,5 @@ __all__ = [
     "CONTINUOUS",
     "BINARY",
     "ALGORITHMS",
+    "PLOTS",
 ]
