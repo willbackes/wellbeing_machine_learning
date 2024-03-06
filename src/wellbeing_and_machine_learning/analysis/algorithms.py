@@ -23,18 +23,14 @@ def algo_performance_by_year(data, algo):
 
         if algo == "ols":
             r_squared = _ols_regression(
-                X_train,
-                X_test,
-                Y_train,
-                Y_test,
+                X,
+                Y,
                 r_squared_only=True,
             )
         elif algo == "lasso":
             r_squared = _lasso_regression(
-                X_train,
-                X_test,
-                Y_train,
-                Y_test,
+                X,
+                Y,
                 r_squared_only=True,
             )
         elif algo == "random_forest":
@@ -85,13 +81,13 @@ def algo_performance_and_variable_importance(data, algo):
             results["r_squared"],
             results["permutation_importance"],
             results["prediction_df"],
-        ) = _ols_regression(X_train, X_test, Y_train, Y_test, r_squared_only=False)
+        ) = _ols_regression(X, Y, r_squared_only=False)
     elif algo == "lasso":
         (
             results["r_squared"],
             results["permutation_importance"],
             results["prediction_df"],
-        ) = _lasso_regression(X_train, X_test, Y_train, Y_test, r_squared_only=False)
+        ) = _lasso_regression(X, Y, r_squared_only=False)
     elif algo == "random_forest":
         (
             results["r_squared"],
@@ -123,26 +119,27 @@ def algo_performance_and_variable_importance(data, algo):
     return results
 
 
-def _ols_regression(X_train, X_test, Y_train, Y_test, r_squared_only):
+def _ols_regression(X, Y, r_squared_only):
     ols_model = LinearRegression()
-    ols_model.fit(X_train, Y_train)
-    Y_pred = ols_model.predict(X_test)
+    ols_model.fit(X, Y)
+    Y_pred = ols_model.predict(X)
 
     if r_squared_only is True:
-        return r2_score(Y_test, Y_pred)
+        return r2_score(Y, Y_pred)
     else:
-        r_squared = r2_score(Y_test, Y_pred)
+        r_squared = r2_score(Y, Y_pred)
+        r_squared_df = pd.DataFrame([r_squared], columns=["r_squared"])
 
-        perm_importance_df = _variable_importance(ols_model, X_test, Y_test)
+        perm_importance_df = _variable_importance(ols_model, X, Y)
 
         prediction_df = pd.DataFrame(
-            {"Y_pred": Y_pred, "income": X_test["logincome"], "age": X_test["age"]},
+            {"Y_pred": Y_pred, "income": X["logincome"], "age": X["age"]},
         )
 
-        return r_squared, perm_importance_df, prediction_df
+        return r_squared_df, perm_importance_df, prediction_df
 
 
-def _lasso_regression(X_train, X_test, Y_train, Y_test, r_squared_only, alphas=None):
+def _lasso_regression(X, Y, r_squared_only, alphas=None):
     if alphas is None:
         alphas = [0.001, 0.01, 0.1, 1, 10]
 
@@ -154,22 +151,23 @@ def _lasso_regression(X_train, X_test, Y_train, Y_test, r_squared_only, alphas=N
         cv=4,
         scoring="neg_mean_squared_error",
     )
-    grid_search.fit(X_train, Y_train)
+    grid_search.fit(X, Y)
     best_lasso_model = grid_search.best_estimator_
-    Y_pred = best_lasso_model.predict(X_test)
+    Y_pred = best_lasso_model.predict(X)
 
     if r_squared_only is True:
-        return r2_score(Y_test, Y_pred)
+        return r2_score(Y, Y_pred)
     else:
-        r_squared = r2_score(Y_test, Y_pred)
+        r_squared = r2_score(Y, Y_pred)
+        r_squared_df = pd.DataFrame([r_squared], columns=["r_squared"])
 
-        perm_importance_df = _variable_importance(best_lasso_model, X_test, Y_test)
+        perm_importance_df = _variable_importance(best_lasso_model, X, Y)
 
         prediction_df = pd.DataFrame(
-            {"Y_pred": Y_pred, "income": X_test["logincome"], "age": X_test["age"]},
+            {"Y_pred": Y_pred, "income": X["logincome"], "age": X["age"]},
         )
 
-        return r_squared, perm_importance_df, prediction_df
+        return r_squared_df, perm_importance_df, prediction_df
 
 
 def _random_forest_regression(
@@ -194,6 +192,7 @@ def _random_forest_regression(
         return r2_score(Y_test, Y_pred)
     else:
         r_squared = r2_score(Y_test, Y_pred)
+        r_squared_df = pd.DataFrame([r_squared], columns=["r_squared"])
 
         perm_importance_df = _variable_importance(rf_model, X_test, Y_test)
 
@@ -201,7 +200,7 @@ def _random_forest_regression(
             {"Y_pred": Y_pred, "income": X_test["logincome"], "age": X_test["age"]},
         )
 
-        return r_squared, perm_importance_df, prediction_df
+        return r_squared_df, perm_importance_df, prediction_df
 
 
 def _gradient_boosting_regression(
@@ -228,6 +227,7 @@ def _gradient_boosting_regression(
         return r2_score(Y_test, Y_pred)
     else:
         r_squared = r2_score(Y_test, Y_pred)
+        r_squared_df = pd.DataFrame([r_squared], columns=["r_squared"])
 
         perm_importance_df = _variable_importance(gb_model, X_test, Y_test)
 
@@ -235,7 +235,7 @@ def _gradient_boosting_regression(
             {"Y_pred": Y_pred, "income": X_test["logincome"], "age": X_test["age"]},
         )
 
-        return r_squared, perm_importance_df, prediction_df
+        return r_squared_df, perm_importance_df, prediction_df
 
 
 def _variable_importance(model, X_test, Y_test):
@@ -243,7 +243,7 @@ def _variable_importance(model, X_test, Y_test):
         model,
         X_test,
         Y_test,
-        n_repeats=30,
+        n_repeats=10,
         random_state=42,
     )
     variable_name = list(X_test.columns)

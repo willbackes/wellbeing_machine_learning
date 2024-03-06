@@ -32,6 +32,6 @@ for algorithm in ALGORITHMS:
     ):
         data = pd.read_pickle(depends_on)
         reg_results = algo_performance_and_variable_importance(data, algo)
-        reg_results[0].to_pickle(r_squared)
-        reg_results[1].to_pickle(variable_importance)
-        reg_results[2].to_pickle(predicted_data)
+        reg_results["r_squared"].to_pickle(r_squared)
+        reg_results["permutation_importance"].to_pickle(variable_importance)
+        reg_results["prediction_df"].to_pickle(predicted_data)
