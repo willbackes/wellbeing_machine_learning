@@ -1,6 +1,9 @@
 import pandas as pd
 
 from wellbeing_and_machine_learning.config import ALGORITHMS, BLD
+from wellbeing_and_machine_learning.final.descriptive_stats import (
+    descriptive_stats_continuous,
+)
 from wellbeing_and_machine_learning.final.plot import (
     plot_average_wellbeing_by_age,
     plot_average_wellbeing_by_income,
@@ -50,3 +53,12 @@ def task_plot_r_squared(
     data = {algo: pd.read_pickle(val) for algo, val in depends_on.items()}
     fig = plot_r_squared(data)
     fig.write_image(produces)
+
+
+def task_descriptive_stats_continuous(
+    depends_on=BLD / "data" / "clean_data_converted.pkl",
+    produces=BLD / "final" / "descriptive_stats_continuous.csv",
+):
+    data = pd.read_pickle(depends_on)
+    statistics = descriptive_stats_continuous(data)
+    statistics.to_csv(produces, sep=",")
