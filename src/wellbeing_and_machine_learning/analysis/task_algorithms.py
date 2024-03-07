@@ -21,17 +21,21 @@ for algorithm in ALGORITHMS:
 
 
 for algorithm in ALGORITHMS:
+    products = {
+        "r_squared": BLD / "analysis" / f"{algorithm}_r_squared.pkl",
+        "permutation_importance": BLD
+        / "analysis"
+        / f"{algorithm}_variable_importance.pkl",
+        "prediction_df": BLD / "analysis" / f"{algorithm}_predicted_data.pkl",
+    }
 
     @pytask.task(id=algorithm)
     def task_algo_performance_and_variable_importance(
         depends_on=BLD / "data" / "clean_data_converted.pkl",
         algo=algorithm,
-        r_squared=BLD / "analysis" / f"{algorithm}_r_squared.pkl",
-        variable_importance=BLD / "analysis" / f"{algorithm}_variable_importance.pkl",
-        predicted_data=BLD / "analysis" / f"{algorithm}_predicted_data.pkl",
+        produces=products,
     ):
         data = pd.read_pickle(depends_on)
         reg_results = algo_performance_and_variable_importance(data, algo)
-        reg_results["r_squared"].to_pickle(r_squared)
-        reg_results["permutation_importance"].to_pickle(variable_importance)
-        reg_results["prediction_df"].to_pickle(predicted_data)
+        for key, value in reg_results.items():
+            value.to_pickle(produces[key])

@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.inspection import permutation_importance
@@ -133,8 +134,9 @@ def _ols_regression(X, Y, r_squared_only):
         perm_importance_df = _variable_importance(ols_model, X, Y)
 
         prediction_df = pd.DataFrame(
-            {"Y_pred": Y_pred, "income": X["logincome"], "age": X["age"]},
+            {"Y_pred": Y_pred, "logincome": X["logincome"], "age": X["age"]},
         )
+        prediction_df["income"] = np.exp(prediction_df["logincome"])
 
         return r_squared_df, perm_importance_df, prediction_df
 
@@ -166,6 +168,7 @@ def _lasso_regression(X, Y, r_squared_only, alphas=None):
         prediction_df = pd.DataFrame(
             {"Y_pred": Y_pred, "income": X["logincome"], "age": X["age"]},
         )
+        prediction_df["income"] = np.exp(prediction_df["logincome"])
 
         return r_squared_df, perm_importance_df, prediction_df
 
@@ -199,6 +202,7 @@ def _random_forest_regression(
         prediction_df = pd.DataFrame(
             {"Y_pred": Y_pred, "income": X_test["logincome"], "age": X_test["age"]},
         )
+        prediction_df["income"] = np.exp(prediction_df["logincome"])
 
         return r_squared_df, perm_importance_df, prediction_df
 
@@ -234,6 +238,7 @@ def _gradient_boosting_regression(
         prediction_df = pd.DataFrame(
             {"Y_pred": Y_pred, "income": X_test["logincome"], "age": X_test["age"]},
         )
+        prediction_df["income"] = np.exp(prediction_df["logincome"])
 
         return r_squared_df, perm_importance_df, prediction_df
 
