@@ -166,7 +166,7 @@ def _lasso_regression(X, Y, r_squared_only, alphas=None):
         perm_importance_df = _variable_importance(best_lasso_model, X, Y)
 
         prediction_df = pd.DataFrame(
-            {"Y_pred": Y_pred, "income": X["logincome"], "age": X["age"]},
+            {"Y_pred": Y_pred, "logincome": X["logincome"], "age": X["age"]},
         )
         prediction_df["income"] = np.exp(prediction_df["logincome"])
 
@@ -200,7 +200,7 @@ def _random_forest_regression(
         perm_importance_df = _variable_importance(rf_model, X_test, Y_test)
 
         prediction_df = pd.DataFrame(
-            {"Y_pred": Y_pred, "income": X_test["logincome"], "age": X_test["age"]},
+            {"Y_pred": Y_pred, "logincome": X_test["logincome"], "age": X_test["age"]},
         )
         prediction_df["income"] = np.exp(prediction_df["logincome"])
 
@@ -236,7 +236,7 @@ def _gradient_boosting_regression(
         perm_importance_df = _variable_importance(gb_model, X_test, Y_test)
 
         prediction_df = pd.DataFrame(
-            {"Y_pred": Y_pred, "income": X_test["logincome"], "age": X_test["age"]},
+            {"Y_pred": Y_pred, "logincome": X_test["logincome"], "age": X_test["age"]},
         )
         prediction_df["income"] = np.exp(prediction_df["logincome"])
 
