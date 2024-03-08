@@ -3,6 +3,7 @@ import pandas as pd
 from wellbeing_and_machine_learning.config import ALGORITHMS, BLD
 from wellbeing_and_machine_learning.final.descriptive_stats import (
     descriptive_stats_continuous,
+    permutation_importance_table,
 )
 from wellbeing_and_machine_learning.final.plot import (
     plot_average_wellbeing_by_age,
@@ -16,6 +17,9 @@ predicted_data_dependencies = {
 }
 r_squared_by_year_dependencies = {
     algo: BLD / "analysis" / f"{algo}_performance_by_year.pkl" for algo in ALGORITHMS
+}
+variable_importance_dependencies = {
+    algo: BLD / "analysis" / f"{algo}_variable_importance.pkl" for algo in ALGORITHMS
 }
 
 
@@ -62,3 +66,12 @@ def task_descriptive_stats_continuous(
     data = pd.read_pickle(depends_on)
     statistics = descriptive_stats_continuous(data)
     statistics.to_csv(produces, sep=",")
+
+
+def task_permutation_importance_table(
+    depends_on=variable_importance_dependencies,
+    produces=BLD / "final" / "permutation_importance_table.csv",
+):
+    data = {algo: pd.read_pickle(val) for algo, val in depends_on.items()}
+    combined_df = permutation_importance_table(data)
+    combined_df.to_csv(produces, sep=",")
