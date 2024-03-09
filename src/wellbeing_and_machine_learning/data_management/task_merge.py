@@ -2,9 +2,8 @@ import pandas as pd
 
 from wellbeing_and_machine_learning.config import BLD, COLS, DATA
 from wellbeing_and_machine_learning.data_management.merge_data import (
-    merge_household_data,
+    merge_household_or_individual_datasets,
     merge_individual_and_household,
-    merge_individual_data,
 )
 
 household_data_dependency = {
@@ -24,7 +23,10 @@ def task_merge_household_data(
         pd.read_stata(depends_on[data], columns=COLS[data])
         for data in DATA["household"]
     ]
-    merge_household_df = merge_household_data(household_data)
+    merge_household_df = merge_household_or_individual_datasets(
+        household_data,
+        on=["hid", "syear"],
+    )
     merge_household_df.to_pickle(produces)
 
 
@@ -38,8 +40,17 @@ def task_merge_individual_data(
         for data in DATA["individual"]
     ]
     health_df = pd.read_stata(health_data, columns=COLS["health"])
-    merge_individual_df = merge_individual_data(individual_data, health_df)
-    merge_individual_df.to_pickle(produces)
+    merge_individual_df = merge_household_or_individual_datasets(
+        individual_data,
+        on=["pid", "hid", "syear"],
+    )
+    result_df = pd.merge(
+        merge_individual_df,
+        health_df,
+        on=["pid", "syear"],
+        how="left",
+    )
+    result_df.to_pickle(produces)
 
 
 def task_merge_individual_and_household(
