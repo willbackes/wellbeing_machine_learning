@@ -4,14 +4,14 @@ This project is centered around exploring the application of machine learning te
 to predict human wellbeing, comparing traditional econometric methods, such as Ordinary
 Least Squares (OLS), with modern algorithms like Least Absolute Shrinkage and Selection
 Operator (LASSO), Random Forests (RF), and Gradient Boosting (GB). Inspired by the work
-of Oparina et al. (2023), our aim is to assess the effectiveness of various models in
+of Oparina et al. (2023), the aim is to assess the effectiveness of various models in
 predicting human wellbeing.
 
 ### Data
 
 The dataset for this project is sourced from the German Socio-Economic Panel (SOEP),
 covering the years 2010 to 2018. This timeframe aligns with the original paper, and
-flexibility is maintained to extend it as long as data remains available.
+flexibility is maintained to consider other years as long as data remains available.
 
 ### Data Management and Variables of Interest
 
@@ -25,10 +25,9 @@ analysis.
 ### Analysis
 
 a) Generate descriptive statistics for the variables of interest. b) Utilize the four
-algorithms to regress the variables of interest against life satisfaction. c) Compute
-performance metrics including R², Mean Squared Error (MSE), Mean Absolute Percentage
-Error, and Mean Absolute Error (MAE). d) Compare performance metrics across the
-different models.
+algorithms to regress life satisfaction on the variables of interest. c) Compute
+performance metrics as R², Mean Squared Error (MSE), Mean Absolute Percentage Error, and
+Mean Absolute Error (MAE). d) Compare performance metrics across the different models.
 
 ### Figures/Final Analysis
 
@@ -61,6 +60,26 @@ To get started, create and activate the environment with
 $ conda/mamba env create
 $ conda activate wellbeing
 ```
+
+Before building the project and to use the SOEP data, please connect your computer via
+VPN to this server:
+
+```console
+\\home.wiwi.uni-bonn.de\home2$\dohmen_soep
+```
+
+User: (enter your user received via e-mail) Password: (enter your password received via
+e-mail)
+
+If you have problems to access the server, add "neori" in front of your username.
+
+Copy the file "SOEP_data.zip" from this server to the following project path:
+
+```console
+wellbeing_and_machine_learning\src\wellbeing_and_machine_learning\data
+```
+
+After copying the file to the above path, you are ready to build the project.
 
 To build the project, type
 
