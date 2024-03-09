@@ -8,6 +8,22 @@ from sklearn.model_selection import GridSearchCV, train_test_split
 
 
 def algo_performance_by_year(data, algo):
+    """Computes the performance of a given algorithm by year.
+
+    This function takes a pandas DataFrame and an algorithm name, splits the data into training and
+    testing sets for each unique year, fits the specified algorithm to the training data, computes
+    the R-squared value for the testing data, and returns a DataFrame with the R-squared values for
+    each year.
+
+    Args:
+        data (pd.DataFrame): A pandas DataFrame with a 'syear' column and a 'lifesatisfaction' column.
+        algo (str): The name of the algorithm to use. Options are 'ols', 'lasso', 'random_forest',
+        and 'gradient_boosting'.
+
+    Returns:
+        pd.DataFrame: A DataFrame with 'syear' and 'r_squared' columns.
+
+    """
     results = {"syear": [], "r_squared": []}
 
     for year in data["syear"].unique():
@@ -61,6 +77,21 @@ def algo_performance_by_year(data, algo):
 
 
 def algo_performance_and_variable_importance(data, algo):
+    """Computes the performance and variable importance of a given algorithm.
+
+    This function takes a pandas DataFrame and an algorithm name, splits the data into training and
+    testing sets, fits the specified algorithm to the training data, computes the R-squared value
+    and permutation importance for the testing data, and returns a dictionary with the results.
+
+    Args:
+        data (pd.DataFrame): A pandas DataFrame with a 'lifesatisfaction' column.
+        algo (str): The name of the algorithm to use. Options are 'ols', 'lasso', 'random_forest',
+        and 'gradient_boosting'.
+
+    Returns:
+        dict: A dictionary with 'r_squared', 'permutation_importance', and 'prediction_df' keys.
+
+    """
     results = {
         "r_squared": None,
         "permutation_importance": None,
@@ -121,6 +152,26 @@ def algo_performance_and_variable_importance(data, algo):
 
 
 def _ols_regression(X, Y, r_squared_only):
+    """Fits an Ordinary Least Squares (OLS) regression model and computes the R-squared
+    value.
+
+    This function takes a features DataFrame (X), a target Series (Y), and a boolean flag
+    (r_squared_only), fits an OLS regression model to the data, predicts the target values, and
+    computes the R-squared value. If r_squared_only is True, it returns the R-squared value.
+    Otherwise, it also computes the permutation importance of the variables and returns a DataFrame
+    with the predicted values, the log of income, and age.
+
+    Args:
+        X (pd.DataFrame): A pandas DataFrame with the feature variables.
+        Y (pd.Series): A pandas Series with the target variable.
+        r_squared_only (bool): A flag indicating whether to return only the R-squared value.
+
+    Returns:
+        float or tuple: If r_squared_only is True, a float representing the R-squared value.
+        Otherwise, a tuple with a DataFrame of the R-squared value, a DataFrame of the permutation
+        importance, and a DataFrame with the predicted values, the log of income, and age.
+
+    """
     ols_model = LinearRegression()
     ols_model.fit(X, Y)
     Y_pred = ols_model.predict(X)
@@ -142,6 +193,28 @@ def _ols_regression(X, Y, r_squared_only):
 
 
 def _lasso_regression(X, Y, r_squared_only, use_grid_search=True):
+    """Fits a Lasso regression model and computes the R-squared value.
+
+    This function takes a features DataFrame (X), a target Series (Y), a boolean flag
+    (r_squared_only), and a boolean flag (use_grid_search), fits a Lasso regression model to the
+    data, predicts the target values, and computes the R-squared value. If use_grid_search is True,
+    it uses GridSearchCV to find the best alpha parameter. If r_squared_only is True, it returns
+    the R-squared value. Otherwise, it also computes the permutation importance of the variables
+    and returns a DataFrame with the predicted values, the log of income, and age.
+
+    Args:
+        X (pd.DataFrame): A pandas DataFrame with the feature variables.
+        Y (pd.Series): A pandas Series with the target variable.
+        r_squared_only (bool): A flag indicating whether to return only the R-squared value.
+        use_grid_search (bool): A flag indicating whether to use GridSearchCV to find the best
+        alpha parameter.
+
+    Returns:
+        float or tuple: If r_squared_only is True, a float representing the R-squared value.
+        Otherwise, a tuple with a DataFrame of the R-squared value, a DataFrame of the permutation
+        importance, and a DataFrame with the predicted values, the log of income, and age.
+
+    """
     if use_grid_search:
         param_grid = {"alpha": [0.001, 0.01, 0.1, 1, 10]}
         lasso_model = Lasso()
@@ -186,6 +259,33 @@ def _random_forest_regression(
     max_depth=None,
     random_state=42,
 ):
+    """Fits a Random Forest regression model and computes the R-squared value.
+
+    This function takes training and testing data, a boolean flag (r_squared_only), and parameters
+    for a Random Forest model, fits the model to the training data, predicts the target values for
+    the testing data, and computes the R-squared value. If use_grid_search is True, it uses
+    GridSearchCV to find the best parameters. If r_squared_only is True, it returns the R-squared
+    value. Otherwise, it also computes the permutation importance of the variables and returns a
+    DataFrame with the predicted values, the log of income, and age.
+
+    Args:
+        X_train (pd.DataFrame): A pandas DataFrame with the training feature variables.
+        X_test (pd.DataFrame): A pandas DataFrame with the testing feature variables.
+        Y_train (pd.Series): A pandas Series with the training target variable.
+        Y_test (pd.Series): A pandas Series with the testing target variable.
+        r_squared_only (bool): A flag indicating whether to return only the R-squared value.
+        use_grid_search (bool): A flag indicating whether to use GridSearchCV to find the best
+        parameters.
+        n_estimators (int): The number of trees in the forest.
+        max_depth (int): The maximum depth of the tree.
+        random_state (int): A seed used by the random number generator.
+
+    Returns:
+        float or tuple: If r_squared_only is True, a float representing the R-squared value.
+        Otherwise, a tuple with a DataFrame of the R-squared value, a DataFrame of the permutation
+        importance, and a DataFrame with the predicted values, the log of income, and age.
+
+    """
     if use_grid_search:
         param_grid = {
             "n_estimators": [50, 100, 200],
@@ -238,6 +338,34 @@ def _gradient_boosting_regression(
     max_depth=8,
     random_state=42,
 ):
+    """Fits a Gradient Boosting regression model and computes the R-squared value.
+
+    This function takes training and testing data, a boolean flag (r_squared_only), and parameters
+    for a Gradient Boosting model, fits the model to the training data, predicts the target values
+    for the testing data, and computes the R-squared value. If use_grid_search is True, it uses
+    GridSearchCV to find the best parameters. If r_squared_only is True, it returns the R-squared
+    value. Otherwise, it also computes the permutation importance of the variables and returns a
+    DataFrame with the predicted values, the log of income, and age.
+
+    Args:
+        X_train (pd.DataFrame): A pandas DataFrame with the training feature variables.
+        X_test (pd.DataFrame): A pandas DataFrame with the testing feature variables.
+        Y_train (pd.Series): A pandas Series with the training target variable.
+        Y_test (pd.Series): A pandas Series with the testing target variable.
+        r_squared_only (bool): A flag indicating whether to return only the R-squared value.
+        use_grid_search (bool): A flag indicating whether to use GridSearchCV to find the best
+        parameters.
+        learning_rate (float): The learning rate shrinks the contribution of each tree.
+        n_estimators (int): The number of boosting stages to perform.
+        max_depth (int): The maximum depth of the individual regression estimators.
+        random_state (int): A seed used by the random number generator.
+
+    Returns:
+        float or tuple: If r_squared_only is True, a float representing the R-squared value.
+        Otherwise, a tuple with a DataFrame of the R-squared value, a DataFrame of the permutation
+        importance, and a DataFrame with the predicted values, the log of income, and age.
+
+    """
     if use_grid_search:
         # Define the parameter grid
         param_grid = {
@@ -283,6 +411,22 @@ def _gradient_boosting_regression(
 
 
 def _variable_importance(model, X_test, Y_test):
+    """Computes the permutation importance of the variables.
+
+    This function takes a fitted model and testing data, computes the permutation importance of the
+    variables using the model and the testing data, and returns a DataFrame with the variable names
+    and their permutation importance values, sorted in descending order of importance.
+
+    Args:
+        model (sklearn estimator): A fitted scikit-learn estimator.
+        X_test (pd.DataFrame): A pandas DataFrame with the testing feature variables.
+        Y_test (pd.Series): A pandas Series with the testing target variable.
+
+    Returns:
+        pd.DataFrame: A DataFrame with the variable names and their permutation importance values,
+        sorted in descending order of importance.
+
+    """
     perm_importance = permutation_importance(
         model,
         X_test,
