@@ -1,3 +1,5 @@
+"""" Tasks to unzip the SOEP data."""
+
 import zipfile
 
 from wellbeing_and_machine_learning.config import BLD, SRC

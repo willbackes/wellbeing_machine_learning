@@ -1,3 +1,5 @@
+"""" This module contains the tasks to merge the household and individual datasets."""
+
 import pandas as pd
 
 from wellbeing_and_machine_learning.config import BLD, COLS, DATA

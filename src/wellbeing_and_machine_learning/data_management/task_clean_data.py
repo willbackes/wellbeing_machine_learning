@@ -1,3 +1,4 @@
+"""" This module contains the tasks to clean the data."""
 import pandas as pd
 
 from wellbeing_and_machine_learning.config import BINARY, BLD, CATEGORICAL, CONTINUOUS
