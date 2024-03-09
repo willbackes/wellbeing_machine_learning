@@ -141,20 +141,22 @@ def _ols_regression(X, Y, r_squared_only):
         return r_squared_df, perm_importance_df, prediction_df
 
 
-def _lasso_regression(X, Y, r_squared_only, alphas=None):
-    if alphas is None:
-        alphas = [0.001, 0.01, 0.1, 1, 10]
+def _lasso_regression(X, Y, r_squared_only, use_grid_search=True):
+    if use_grid_search:
+        param_grid = {"alpha": [0.001, 0.01, 0.1, 1, 10]}
+        lasso_model = Lasso()
+        grid_search = GridSearchCV(
+            estimator=lasso_model,
+            param_grid=param_grid,
+            cv=4,
+            scoring="neg_mean_squared_error",
+        )
+        grid_search.fit(X, Y)
+        best_lasso_model = grid_search.best_estimator_
+    else:
+        best_lasso_model = Lasso(alpha=0.001)
+        best_lasso_model.fit(X, Y)
 
-    param_grid = {"alpha": alphas}
-    lasso_model = Lasso()
-    grid_search = GridSearchCV(
-        estimator=lasso_model,
-        param_grid=param_grid,
-        cv=4,
-        scoring="neg_mean_squared_error",
-    )
-    grid_search.fit(X, Y)
-    best_lasso_model = grid_search.best_estimator_
     Y_pred = best_lasso_model.predict(X)
 
     if r_squared_only is True:
@@ -179,15 +181,32 @@ def _random_forest_regression(
     Y_train,
     Y_test,
     r_squared_only,
+    use_grid_search=False,
     n_estimators=100,
     max_depth=None,
     random_state=42,
 ):
-    rf_model = RandomForestRegressor(
-        n_estimators=n_estimators,
-        max_depth=max_depth,
-        random_state=random_state,
-    )
+    if use_grid_search:
+        param_grid = {
+            "n_estimators": [50, 100, 200],
+            "max_depth": [None, 10, 50, 100],
+        }
+        rf = RandomForestRegressor(random_state=random_state)
+        grid_search = GridSearchCV(estimator=rf, param_grid=param_grid, cv=3, n_jobs=-1)
+        grid_search.fit(X_train, Y_train)
+        best_params = grid_search.best_params_
+        rf_model = RandomForestRegressor(
+            n_estimators=best_params["n_estimators"],
+            max_depth=best_params["max_depth"],
+            random_state=random_state,
+        )
+    else:
+        rf_model = RandomForestRegressor(
+            n_estimators=n_estimators,
+            max_depth=max_depth,
+            random_state=random_state,
+        )
+
     rf_model.fit(X_train, Y_train)
     Y_pred = rf_model.predict(X_test)
 
@@ -213,17 +232,37 @@ def _gradient_boosting_regression(
     Y_train,
     Y_test,
     r_squared_only,
+    use_grid_search=False,
     learning_rate=0.005,
     n_estimators=100,
     max_depth=8,
     random_state=42,
 ):
-    gb_model = GradientBoostingRegressor(
-        learning_rate=learning_rate,
-        n_estimators=n_estimators,
-        max_depth=max_depth,
-        random_state=random_state,
-    )
+    if use_grid_search:
+        # Define the parameter grid
+        param_grid = {
+            "learning_rate": [0.001, 0.005, 0.01],
+            "n_estimators": [50, 100, 200],
+            "max_depth": [3, 5, 8],
+        }
+        gb = GradientBoostingRegressor(random_state=random_state)
+        grid_search = GridSearchCV(estimator=gb, param_grid=param_grid, cv=3, n_jobs=-1)
+        grid_search.fit(X_train, Y_train)
+        best_params = grid_search.best_params_
+        gb_model = GradientBoostingRegressor(
+            learning_rate=best_params["learning_rate"],
+            n_estimators=best_params["n_estimators"],
+            max_depth=best_params["max_depth"],
+            random_state=random_state,
+        )
+    else:
+        gb_model = GradientBoostingRegressor(
+            learning_rate=learning_rate,
+            n_estimators=n_estimators,
+            max_depth=max_depth,
+            random_state=random_state,
+        )
+
     gb_model.fit(X_train, Y_train)
     Y_pred = gb_model.predict(X_test)
 
