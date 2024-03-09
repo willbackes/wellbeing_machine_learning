@@ -1,3 +1,5 @@
+"""Plotting functions for the final project."""
+
 import pandas as pd
 import plotly.express as px
 
@@ -5,6 +7,21 @@ from wellbeing_and_machine_learning.config import ALGORITHMS
 
 
 def plot_average_wellbeing_by_income(data):
+    """Plots the average wellbeing by income.
+
+    This function takes a dictionary of pandas DataFrames, combines them into a single DataFrame,
+    calculates the average predicted wellbeing ('Y_pred') for each income level for each algorithm,
+    and plots the results. The plot is a line plot with income on the x-axis and average predicted
+    wellbeing on the y-axis. Each algorithm is represented by a different color line.
+
+    Args:
+        data (dict of pd.DataFrame): A dictionary where keys are algorithm names and values are
+        pandas DataFrames. Each DataFrame should have columns 'income' and 'Y_pred'.
+
+    Returns:
+        plotly.graph_objs._figure.Figure: A plotly Figure object that can be displayed or saved.
+
+    """
     data_combined = pd.concat([df.assign(algorithm=alg) for alg, df in data.items()])
     average_Y_pred_by_income = (
         data_combined.groupby(["algorithm", "income"])["Y_pred"].mean().reset_index()
@@ -29,6 +46,21 @@ def plot_average_wellbeing_by_income(data):
 
 
 def plot_average_wellbeing_by_age(data):
+    """Plots the average wellbeing by age.
+
+    This function takes a dictionary of pandas DataFrames, combines them into a single DataFrame,
+    calculates the average predicted wellbeing ('Y_pred') for each age for each algorithm,
+    and plots the results. The plot is a line plot with age on the x-axis and average predicted
+    wellbeing on the y-axis. Each algorithm is represented by a different color line.
+
+    Args:
+        data (dict of pd.DataFrame): A dictionary where keys are algorithm names and values are
+        pandas DataFrames. Each DataFrame should have columns 'age' and 'Y_pred'.
+
+    Returns:
+        plotly.graph_objs._figure.Figure: A plotly Figure object that can be displayed or saved.
+
+    """
     data_combined = pd.concat([df.assign(algorithm=alg) for alg, df in data.items()])
     average_Y_pred_by_age = (
         data_combined.groupby(["algorithm", "age"])["Y_pred"].mean().reset_index()
@@ -46,6 +78,19 @@ def plot_average_wellbeing_by_age(data):
 
 
 def plot_histogram_life_satisfaction(data):
+    """Plots a histogram of life satisfaction scores.
+
+    This function takes a pandas DataFrame, calculates the mean and variance of the 'lifesatisfaction'
+    column, and plots a histogram of the 'lifesatisfaction' scores. The histogram has 11 bins and
+    displays the y-axis as a fraction of the total. The x-axis categories are ordered from 1 to 10.
+
+    Args:
+        data (pd.DataFrame): A pandas DataFrame with a 'lifesatisfaction' column.
+
+    Returns:
+        plotly.graph_objs._figure.Figure: A plotly Figure object that can be displayed or saved.
+
+    """
     mean_value = data["lifesatisfaction"].mean()
     variance_value = data["lifesatisfaction"].var()
     fig = px.histogram(
@@ -76,6 +121,21 @@ def plot_histogram_life_satisfaction(data):
 
 
 def plot_r_squared(data):
+    """Plots the average R-squared values for different algorithms.
+
+    This function takes a dictionary of pandas DataFrames, combines them into a single DataFrame,
+    calculates the mean and standard deviation of the 'r_squared' values for each algorithm,
+    and plots the results. The plot is a bar plot with algorithms on the x-axis and average R-squared
+    values on the y-axis. Error bars represent the standard deviation of the R-squared values.
+
+    Args:
+        data (dict of pd.DataFrame): A dictionary where keys are algorithm names and values are
+        pandas DataFrames. Each DataFrame should have a 'r_squared' column.
+
+    Returns:
+        plotly.graph_objs._figure.Figure: A plotly Figure object that can be displayed or saved.
+
+    """
     data_combined = pd.concat([df.assign(algorithm=algo) for algo, df in data.items()])
     average_r_squared = (
         data_combined.groupby(["algorithm"])["r_squared"].mean().reset_index()
