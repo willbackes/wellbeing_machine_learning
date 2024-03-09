@@ -61,7 +61,7 @@ def permutation_importance_table(data):
         ignore_index=True,
     )
 
-    rename = {
+    rename_var = {
         "age": "Age",
         "agesquared": "Age squared",
         "education": "Education",
@@ -73,9 +73,17 @@ def permutation_importance_table(data):
         "housingstatus_[3] Eigentuemer": "Housing status: owner",
         "disability": "Disability status",
         "labourstatus": "Labour-force status",
+        "birthregion_nan": "Birth region: missing",
+    }
+    rename_algo = {
+        "ols": "OLS",
+        "lasso": "Lasso",
+        "random_forest": "Random Forest",
+        "gradient_boosting": "Gradient Boosting",
     }
 
-    combined_df["variable_name"] = combined_df["variable_name"].replace(rename)
+    combined_df["variable_name"] = combined_df["variable_name"].replace(rename_var)
+    combined_df["key"] = combined_df["key"].replace(rename_algo)
     return combined_df.rename(
         columns={"variable_name": "Variable", "key": "Algorithm"},
     )

@@ -67,7 +67,7 @@ def task_plot_r_squared(
 
 def task_descriptive_stats_continuous(
     depends_on=BLD / "data" / "clean_data_converted.pkl",
-    produces=BLD / "final" / "descriptive_stats_continuous.csv",
+    produces=BLD / "final" / "descriptive_stats_continuous.tex",
 ):
     """Create descriptive statistics for continuous variables."""
     data = pd.read_pickle(depends_on)
@@ -77,7 +77,7 @@ def task_descriptive_stats_continuous(
 
 def task_permutation_importance_table(
     depends_on=variable_importance_dependencies,
-    produces=BLD / "final" / "permutation_importance_table.csv",
+    produces=BLD / "final" / "permutation_importance_table.tex",
 ):
     """Create table of permutation importance."""
     data = {algo: pd.read_pickle(val) for algo, val in depends_on.items()}

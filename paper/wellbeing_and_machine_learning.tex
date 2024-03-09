@@ -16,8 +16,10 @@
 \usepackage[dvipsnames]{xcolor}
 \usepackage{subcaption}
 \usepackage{minibox}
-\usepackage{pgfplotstable}
 \usepackage{csvsimple}
+\usepackage{booktabs}
+\usepackage{pgfplotstable}
+
 % \usepackage{pdf14} % Enable for Manuscriptcentral -- can't handle pdf 1.5
 % \usepackage{endfloat} % Enable to move tables / figures to the end. Useful for some
 % submissions.
@@ -84,20 +86,29 @@
 \section{Introduction} % (fold)
 \label{sec:introduction}
 
-If you are using this template, please cite this item from the references:
-\citet{GaudeckerEconProjectTemplates}.
+This project is centered around exploring the application of machine learning techniques
+to predict human wellbeing, comparing traditional econometric methods, such as Ordinary
+Least Squares (OLS), with modern algorithms like Least Absolute Shrinkage and Selection
+Operator (LASSO), Random Forests (RF), and Gradient Boosting (GB). Inspired by the work
+of Oparina et al. (2023), the aim is to assess the effectiveness of various models in
+predicting human wellbeing. The project was created using the template from \citet{GaudeckerEconProjectTemplates}
+% section introduction (end)
 
-The data set for the example project is taken from
-\url{https://www.stem.org.uk/resources/elibrary/resource/28452/large-datasets-stats4schools}.
-It contains data on smoking habits in the UK, with 1691 observations and 12 variables.
-We consider only 4 of the 12 features for the prediction of the variable
-\texttt{smoking}: \texttt{marital\_status}, \texttt{highest\_qualification},
-\texttt{gender} and \texttt{age}. We model the dependence using a Logistic model. All
-numerical features are included linearly, while categorical features are expanded into
-dummy variables. Figures below illustrate the model predictions over the lifetime. You
-will find one figure and one estimation summary table for each installed programming
-language.
+\section{Methods} % (fold)
+\label{sec:methods}
 
+\subsection{Data}
+The dataset for this project is sourced from the German Socio-Economic Panel (SOEP),
+covering the years 2010 to 2018. This timeframe aligns with the original paper, and
+flexibility is maintained to consider other years as long as data remains available.
+The SOEP is a representative longitudinal survey of private households in Germany. One main feature of the SOEP data is that it follows the same private households, individuals, and families every year, surveying a range of topics from living conditions, education to values and personality since 1984.
+
+\subsection{Algorithms}
+
+\subsection{Explanatory variables}
+
+
+\input{../bld/final/descriptive_stats_continuous.tex}
 
 
 \begin{figure}[htbp]
@@ -107,6 +118,12 @@ language.
     \label{fig:histogram_life_satisfaction}
 \end{figure}
 
+
+\section{Results} % (fold)
+\label{sec:results}
+
+\subsection{Model performance}
+
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.85\textwidth]{../bld/final/r_squared_algorithms}
@@ -114,6 +131,15 @@ language.
     \label{fig:r_squared_algorithms}
 \end{figure}
 
+
+\subsection{Variable importance}
+
+\input{../bld/final/permutation_importance_table.tex}
+
+
+
+
+\subsection{Wellbeing by age and income}
 
 \begin{figure}[htbp]
     \centering
@@ -129,10 +155,10 @@ language.
     \label{fig:average_wellbeing_by_income}
 \end{figure}
 
+\section{Discussion} % (fold)
+\label{sec:discussion}
 
 
-
-% section introduction (end)
 
 
 
