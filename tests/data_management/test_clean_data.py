@@ -19,6 +19,10 @@ def test_convert_categorical_to_dummy_columns():
             "size": ["S", "M", "L", "S", "M"],
         },
     )
+    # Convert the input data to categorical type
+    data["color"] = data["color"].astype(pd.CategoricalDtype())
+    data["size"] = data["size"].astype(pd.CategoricalDtype())
+
     actual = convert_categorical_to_dummy(data, ["color", "size"])
     assert set(actual.columns) == expected
 
@@ -41,6 +45,10 @@ def test_convert_categorical_to_dummy_typical_result():
             "size": ["S", "M", "L", "S", "M"],
         },
     )
+    # Convert the input data to categorical type
+    data["color"] = data["color"].astype(pd.CategoricalDtype())
+    data["size"] = data["size"].astype(pd.CategoricalDtype())
+
     actual = convert_categorical_to_dummy(data, ["color", "size"]).astype(
         pd.UInt8Dtype(),
     )

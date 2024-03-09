@@ -20,6 +20,7 @@ def clean_data(merged_data):
         pd.DataFrame: The cleaned DataFrame.
 
     """
+    _fail_if_not_a_dataframe(merged_data)
     valid_data = pd.DataFrame()
     valid_data = merged_data[
         (merged_data["syear"] >= 2010) & (merged_data["syear"] <= 2018)
@@ -84,6 +85,9 @@ def convert_categorical_to_dummy(data, columns):
         pd.DataFrame: A DataFrame with one-hot encoded variables.
 
     """
+    _fail_if_not_a_dataframe(data)
+    _fail_if_not_a_list_of_strings(columns)
+    _fail_if_not_categorical_data(data, columns)
     encoder = OneHotEncoder(sparse_output=False)
     return pd.DataFrame(
         encoder.fit_transform(data[columns]),
@@ -106,6 +110,8 @@ def observed_means_for_missing_values(data, columns):
         pd.DataFrame: A DataFrame with missing values filled.
 
     """
+    _fail_if_not_a_dataframe(data)
+    _fail_if_not_a_list_of_strings(columns)
     imputer = SimpleImputer(strategy="mean")
     return pd.DataFrame(
         imputer.fit_transform(data[columns]),
@@ -126,6 +132,7 @@ def _clean_invalid_data(data):
         pd.DataFrame: The DataFrame with invalid data replaced by NA.
 
     """
+    _fail_if_not_a_dataframe(data)
     invalid_data_mapping = {
         "[-1] keine Angabe": NA,
         "[-2] trifft nicht zu": NA,
@@ -152,6 +159,9 @@ def _extract_number_from_brackets(data):
         pd.Series: A Series with the extracted numbers.
 
     """
+    _fail_if_not_a_series(data)
+    _fail_if_not_string_series(data)
+    _fail_if_bracketed_numbers_missing(data)
     df = data.str.extract(r"\[(\d+)\]")
     return df.astype(pd.UInt16Dtype())
 
@@ -170,6 +180,9 @@ def _clean_binary_data(data, is_one):
         pd.Series: A binary Series.
 
     """
+    _fail_if_not_a_series(data)
+    _fail_if_not_string_series(data)
+    _fail_if_is_one_not_in_data(data, is_one)
     df = data.apply(lambda x: 1 if x == is_one else 0)
     return df.astype(pd.UInt8Dtype())
 
@@ -186,6 +199,8 @@ def _clean_marital_status(data):
         pd.Series: The Series with invalid marital status data replaced by NA.
 
     """
+    _fail_if_not_a_series(data)
+    _fail_if_not_string_series(data)
     invalid_marital_data = {
         "[6] Ehepartner im Ausland": NA,
         "[7] Eingetragene gleichgeschlechtliche Partnerschaft zusammenlebend": NA,
@@ -206,4 +221,49 @@ def _positive_number_only(data):
         pd.Series: The Series with non-positive values replaced by NA.
 
     """
+    _fail_if_not_a_series(data)
     return data.where(data > 0, NA)
+
+
+def _fail_if_not_a_dataframe(data):
+    if not isinstance(data, pd.DataFrame):
+        msg = "Input data must be a pandas DataFrame."
+        raise ValueError(msg)
+
+
+def _fail_if_not_a_list_of_strings(columns):
+    if not isinstance(columns, list) or not all(
+        isinstance(col, str) for col in columns
+    ):
+        msg = "Input columns must be a list of strings."
+        raise ValueError(msg)
+
+
+def _fail_if_not_categorical_data(data, columns):
+    if not all(isinstance(data[col].dtype, pd.CategoricalDtype) for col in columns):
+        msg = "All specified columns must contain categorical data."
+        raise ValueError(msg)
+
+
+def _fail_if_not_a_series(data):
+    if not isinstance(data, pd.Series):
+        msg = "Input data must be a pandas Series."
+        raise ValueError(msg)
+
+
+def _fail_if_not_string_series(data):
+    if not pd.api.types.is_string_dtype(data):
+        msg = "Input Series must contain string data."
+        raise ValueError(msg)
+
+
+def _fail_if_bracketed_numbers_missing(data):
+    if data.str.contains(r"\[\d+\]").sum() == 0:
+        msg = "No bracketed numbers found in the input Series."
+        raise ValueError(msg)
+
+
+def _fail_if_is_one_not_in_data(data, is_one):
+    if not data.empty and is_one not in data.values:
+        msg = f"The value '{is_one}' is not found in the input Series."
+        raise ValueError(msg)
