@@ -162,18 +162,6 @@ def plot_r_squared(data):
     fig.update_layout(title_text="SOEP (avg. across 2010-2018)", title_x=0.5)
     fig.update_xaxes(
         title_text="Algorithms",
-        tickmode="array",
-        tickvals=list(range(len(ALGORITHMS))),
-        ticktext=[
-            f"{algo}<br>({mean:.3f})"
-            for algo, mean in zip(
-                ALGORITHMS,
-                merged_data.loc[
-                    merged_data["algorithm"].isin(ALGORITHMS),
-                    "r_squared_mean",
-                ],
-            )
-        ],
     )
     fig.update_yaxes(title_text="R2")
 
