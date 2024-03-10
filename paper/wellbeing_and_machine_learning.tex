@@ -91,7 +91,8 @@ to predict human wellbeing, comparing traditional econometric methods, such as O
 Least Squares (OLS), with modern algorithms like Least Absolute Shrinkage and Selection
 Operator (LASSO), Random Forests (RF), and Gradient Boosting (GB). Inspired by the work
 of Oparina et al. (2023), the aim is to assess the effectiveness of various models in
-predicting human wellbeing. The project was created using the template from \citet{GaudeckerEconProjectTemplates}
+predicting human wellbeing. The project was created using the template by
+\citet{GaudeckerEconProjectTemplates}.
 % section introduction (end)
 
 \section{Methods} % (fold)
@@ -101,22 +102,69 @@ predicting human wellbeing. The project was created using the template from \cit
 The dataset for this project is sourced from the German Socio-Economic Panel (SOEP),
 covering the years 2010 to 2018. This timeframe aligns with the original paper, and
 flexibility is maintained to consider other years as long as data remains available.
-The SOEP is a representative longitudinal survey of private households in Germany. One main feature of the SOEP data is that it follows the same private households, individuals, and families every year, surveying a range of topics from living conditions, education to values and personality since 1984.
 
-\subsection{Algorithms}
+The SOEP is a representative longitudinal survey of private households in Germany.
+One main feature of the SOEP data is that it follows the same private households,
+individuals, and families every year, surveying a range of topics from living conditions,
+education to values and personality since 1984.
 
-\subsection{Explanatory variables}
-
-
-\input{../bld/final/descriptive_stats_continuous.tex}
-
+Wellbeing is measured by the self-reported variable Life Satisfaction on a scale from 0
+to 10, where 0 represents the lowest and 10 the highest level of satisfaction.
+Figure~\ref{fig:histogram_life_satisfaction} shows the distribution of life satisfaction
+in the dataset. This figure is comparable to the Appendix Figure A1 in the original paper
+and was created using the \texttt{plotly} package in Python.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.85\textwidth]{../bld/final/histogram_life_satisfaction}
-    \caption{\emph{Python:} Model predictions of the smoking probability over the lifetime. Each colored line represents a case where marital status is fixed to one of the values present in the data set.}
+    \caption{Histograms of life satisfaction for SOEP data.}
     \label{fig:histogram_life_satisfaction}
 \end{figure}
+
+\subsection{Algorithms}
+
+The algorithms used in this project are OLS, LASSO, Random Forest, and Gradient Boosting.
+The Python package \texttt{scikit-learn} is used to implement the models. The Random Forest
+and Gradient Boosting models are trained on the training set and evaluated on the test set.
+The training set contains 80\% of the data, and the test set contains the remaining 20\%.
+In order to reduce the amount of time spent on training the models, cross-validation is not
+used to find the optimal hyperparameters. However, the functions were written in a way that
+allow to use grid search to find the optimal hyperparameters.
+
+The performance of the models is measured using the $R^2$ score, which is the proportion of
+the variance in the dependent variable that is predictable from the independent variables.
+To evaluate the importance of the variables, the permutation importance is used. This method
+measures the increase in the prediction error of the model after permuting the feature. The
+larger the increase, the more important the feature is.
+
+
+\subsection{Explanatory variables}
+In this project, focus was placed on the restricted set of variables used in the original
+paper. This set includes: sex, age, age-squared, ethnicity, religiosity, number of household
+members, number of children in the household, marital status, log household income, general
+health status, disability, body mass index, labour-force status, working hours, home ownership,
+area of residence, and interview month. The variables are grouped into two categories
+(household and individual level data) and include cotinuous, categorical and binary variables.
+The descriptive statistics of the continuous variables are shown in Table~\ref{tab:descriptive_stats_continuous}
+and is comparable to the Table A2 in the original paper.
+
+\begin{table}[htbp]
+    \centering
+    \input{../bld/final/descriptive_stats_continuous.tex}
+    \caption{List of continuous variables in the restricted set: descriptive statistics.}
+    \label{tab:descriptive_stats_continuous}
+\end{table}
+
+
+Note that the values differ for most of the variables, but more significantly for the Log HH Income,
+Health, and Working hours. This is due to the fact that the SOEP data contains an extensive
+set of variables, with some of them being similar to each other. For example, the variable Health
+measures the number of doctor visits in previous year. In SOEP data, there are the variables
+Total Number Of Visits To Doctor (ple0059), Number Of Visits To Other Doctor (ple0070), Number of
+annual doctor visits (m11127), Number Of Doctor Visits Last Three Mths (ple0072), and others.
+As the original paper does not specify which variable was used and in the case I could not find
+the exact variable, I used the variable that included the most observations.
+
 
 
 \section{Results} % (fold)
@@ -124,36 +172,54 @@ The SOEP is a representative longitudinal survey of private households in German
 
 \subsection{Model performance}
 
+To evaluate the performance of the models, the $R^2$ score is used. Figure~\ref{fig:r_squared_algorithms}
+depicts the $R^2$ scores for the different models. The scores are comparable to the Figure 1 in the
+original paper.
+
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.85\textwidth]{../bld/final/r_squared_algorithms}
-    \caption{\emph{Python:} Model predictions of the smoking probability over the lifetime. Each colored line represents a case where marital status is fixed to one of the values present in the data set.}
+    \caption{Model performances as measured by R-squared.}
     \label{fig:r_squared_algorithms}
 \end{figure}
 
 
 \subsection{Variable importance}
 
-\input{../bld/final/permutation_importance_table.tex}
+To assess the importance of the variables, the permutation importance is used. The results are
+shown in Table~\ref{tab:permutation_importance_table}. The table is comparable to the Table A5 in
+the original paper. The results show the 10 most-important variables for each model.
 
 
+\begin{table}[htbp]
+    \centering
+    \input{../bld/final/permutation_importance_table.tex}
+    \caption{Permutation Importance (PI) in OLS, Lasso, RF and GB on the Restricted Set of variables: the 10 most-important variables.}
+    \label{tab:permutation_importance_table}
+\end{table}
 
 
 \subsection{Wellbeing by age and income}
 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.85\textwidth]{../bld/final/average_wellbeing_by_age}
-    \caption{\emph{Python:} Model predictions of the smoking probability over the lifetime. Each colored line represents a case where marital status is fixed to one of the values present in the data set.}
-    \label{fig:average_wellbeing_by_age}
-\end{figure}
+Figure~\ref{fig:average_wellbeing_by_income} and Figure~\ref{fig:average_wellbeing_by_age} depict
+average predicted wellbeing for different levels of age and income, holding the other covariates
+constant.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.85\textwidth]{../bld/final/average_wellbeing_by_income}
-    \caption{\emph{Python:} Model predictions of the smoking probability over the lifetime. Each colored line represents a case where marital status is fixed to one of the values present in the data set.}
+    \caption{Wellbeing and household income: restricted set of variables.}
     \label{fig:average_wellbeing_by_income}
 \end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{../bld/final/average_wellbeing_by_age}
+    \caption{Wellbeing and age: restricted set of variables.}
+    \label{fig:average_wellbeing_by_age}
+\end{figure}
+
+
 
 \section{Discussion} % (fold)
 \label{sec:discussion}
