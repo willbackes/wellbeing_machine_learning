@@ -71,7 +71,7 @@ User: (enter your user received via e-mail) Password: (enter your password recei
 e-mail)
 ```
 
-If you have problems to access the server, add "neori" in front of your username.
+If you have problems to access the server, add '''neori\\''' in front of your username.
 
 Copy the file "SOEP_data.zip" from this server to the following project path:
 
