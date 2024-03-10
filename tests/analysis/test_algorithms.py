@@ -1,52 +1,300 @@
-import unittest
-
-import numpy as np
 import pandas as pd
-
-# Assuming the _ols_regression and _variable_importance functions are in a module named 'algorithms'
+from sklearn.datasets import make_regression
+from sklearn.model_selection import train_test_split
 from wellbeing_and_machine_learning.analysis.algorithms import (
+    _gradient_boosting_regression,
+    _lasso_regression,
     _ols_regression,
+    _random_forest_regression,
 )
 
 
-class TestOLSRegression(unittest.TestCase):
-    def setUp(self):
-        # Create some dummy data for testing
-        self.X = pd.DataFrame(
-            {"logincome": np.random.rand(10), "age": np.random.randint(20, 50, 10)},
-        )
-        self.Y = pd.Series(np.random.rand(10))
-        self.r_squared_only = False
-
-    def test_ols_regression_r_squared_only(self):
-        # Test the function when r_squared_only is True
-        r_squared = _ols_regression(self.X, self.Y, True)
-        assert isinstance(r_squared, float)
-
-    def test_ols_regression_full_output(self):
-        # Test the function when r_squared_only is False
-        r_squared_df, perm_importance_df, prediction_df = _ols_regression(
-            self.X,
-            self.Y,
-            self.r_squared_only,
-        )
-
-        # Check the types of the outputs
-        assert isinstance(r_squared_df, pd.DataFrame)
-        assert isinstance(perm_importance_df, pd.DataFrame)
-        assert isinstance(prediction_df, pd.DataFrame)
-
-        # Check the shapes of the outputs
-        assert r_squared_df.shape == (1, 1)
-        assert prediction_df.shape == (10, 4)
-
-        # Check the columns of the outputs
-        assert list(r_squared_df.columns) == ["r_squared"]
-        assert "Y_pred" in prediction_df.columns
-        assert "logincome" in prediction_df.columns
-        assert "age" in prediction_df.columns
-        assert "income" in prediction_df.columns
+def test_ols_regression_returns_float():
+    X, Y = make_regression(n_samples=100, n_features=2, noise=0.1)
+    X = pd.DataFrame(X, columns=["logincome", "age"])
+    Y = pd.Series(Y)
+    actual = _ols_regression(X, Y, r_squared_only=True)
+    assert isinstance(actual, float)
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_ols_regression_result_within_range():
+    X, Y = make_regression(n_samples=100, n_features=2, noise=0.1)
+    X = pd.DataFrame(X, columns=["logincome", "age"])
+    Y = pd.Series(Y)
+    actual = _ols_regression(X, Y, r_squared_only=True)
+    assert 0 <= actual <= 1
+
+
+def test_ols_regression_full_output_length():
+    expected = 3
+    X, Y = make_regression(n_samples=100, n_features=2, noise=0.1)
+    X = pd.DataFrame(X, columns=["logincome", "age"])
+    Y = pd.Series(Y)
+    actual = _ols_regression(X, Y, r_squared_only=False)
+    assert len(actual) == expected
+
+
+def test_ols_regression_full_output_r_squared_df():
+    X, Y = make_regression(n_samples=100, n_features=2, noise=0.1)
+    X = pd.DataFrame(X, columns=["logincome", "age"])
+    Y = pd.Series(Y)
+    r_squared_df, _, _ = _ols_regression(X, Y, r_squared_only=False)
+    assert "r_squared" in r_squared_df.columns
+
+
+def test_ols_regression_full_output_prediction_df():
+    expected = {"Y_pred", "logincome", "age", "income"}
+    X, Y = make_regression(n_samples=100, n_features=2, noise=0.1)
+    X = pd.DataFrame(X, columns=["logincome", "age"])
+    Y = pd.Series(Y)
+    _, _, prediction_df = _ols_regression(X, Y, r_squared_only=False)
+    assert set(prediction_df.columns) == expected
+
+
+def test_lasso_regression_full_output_length():
+    expected = 3
+    X, Y = make_regression(n_samples=100, n_features=2, noise=0.1)
+    X = pd.DataFrame(X, columns=["logincome", "age"])
+    Y = pd.Series(Y)
+    result = _lasso_regression(X, Y, r_squared_only=False)
+    assert len(result) == expected
+
+
+def test_lasso_regression_full_output_r_squared_df():
+    X, Y = make_regression(n_samples=100, n_features=2, noise=0.1)
+    X = pd.DataFrame(X, columns=["logincome", "age"])
+    Y = pd.Series(Y)
+    r_squared_df, _, _ = _lasso_regression(X, Y, r_squared_only=False)
+    assert "r_squared" in r_squared_df.columns
+
+
+def test_lasso_regression_full_output_prediction_df():
+    expected = {"Y_pred", "logincome", "age", "income"}
+    X, Y = make_regression(n_samples=100, n_features=2, noise=0.1)
+    X = pd.DataFrame(X, columns=["logincome", "age"])
+    Y = pd.Series(Y)
+    _, _, prediction_df = _lasso_regression(X, Y, r_squared_only=False)
+    assert set(prediction_df.columns) == expected
+
+
+def test_lasso_regression_with_grid_search():
+    X, Y = make_regression(n_samples=100, n_features=2, noise=0.1)
+    X = pd.DataFrame(X, columns=["logincome", "age"])
+    Y = pd.Series(Y)
+    result = _lasso_regression(X, Y, r_squared_only=True, use_grid_search=True)
+    assert 0 <= result <= 1
+
+
+def test_lasso_regression_without_grid_search():
+    X, Y = make_regression(n_samples=100, n_features=2, noise=0.1)
+    X = pd.DataFrame(X, columns=["logincome", "age"])
+    Y = pd.Series(Y)
+    result = _lasso_regression(X, Y, r_squared_only=True, use_grid_search=False)
+    assert 0 <= result <= 1
+
+
+def test_random_forest_regression_r_squared_only():
+    X, Y = make_regression(n_samples=100, n_features=2, noise=0.1)
+    X = pd.DataFrame(X, columns=["logincome", "age"])
+    Y = pd.Series(Y)
+    X_train, X_test, Y_train, Y_test = train_test_split(
+        X,
+        Y,
+        test_size=0.2,
+        random_state=42,
+    )
+
+    result = _random_forest_regression(
+        X_train,
+        X_test,
+        Y_train,
+        Y_test,
+        r_squared_only=True,
+    )
+
+    assert isinstance(result, float)
+    assert 0 <= result <= 1
+
+
+def test_random_forest_regression_full_output_length():
+    expected = 3
+    X, Y = make_regression(n_samples=100, n_features=2, noise=0.1)
+    X = pd.DataFrame(X, columns=["logincome", "age"])
+    Y = pd.Series(Y)
+    X_train, X_test, Y_train, Y_test = train_test_split(
+        X,
+        Y,
+        test_size=0.2,
+        random_state=42,
+    )
+    result = _random_forest_regression(
+        X_train,
+        X_test,
+        Y_train,
+        Y_test,
+        r_squared_only=False,
+    )
+    assert len(result) == expected
+
+
+def test_random_forest_regression_full_output_r_squared_df():
+    X, Y = make_regression(n_samples=100, n_features=2, noise=0.1)
+    X = pd.DataFrame(X, columns=["logincome", "age"])
+    Y = pd.Series(Y)
+    X_train, X_test, Y_train, Y_test = train_test_split(
+        X,
+        Y,
+        test_size=0.2,
+        random_state=42,
+    )
+    r_squared_df, _, _ = _random_forest_regression(
+        X_train,
+        X_test,
+        Y_train,
+        Y_test,
+        r_squared_only=False,
+    )
+    assert "r_squared" in r_squared_df.columns
+
+
+def test_random_forest_regression_full_output_perm_importance_df():
+    X, Y = make_regression(n_samples=100, n_features=2, noise=0.1)
+    X = pd.DataFrame(X, columns=["logincome", "age"])
+    Y = pd.Series(Y)
+    X_train, X_test, Y_train, Y_test = train_test_split(
+        X,
+        Y,
+        test_size=0.2,
+        random_state=42,
+    )
+    _, perm_importance_df, _ = _random_forest_regression(
+        X_train,
+        X_test,
+        Y_train,
+        Y_test,
+        r_squared_only=False,
+    )
+    assert isinstance(perm_importance_df, pd.DataFrame)
+
+
+def test_random_forest_regression_full_output_prediction_df():
+    expected = {"Y_pred", "logincome", "age", "income"}
+    X, Y = make_regression(n_samples=100, n_features=2, noise=0.1)
+    X = pd.DataFrame(X, columns=["logincome", "age"])
+    Y = pd.Series(Y)
+    X_train, X_test, Y_train, Y_test = train_test_split(
+        X,
+        Y,
+        test_size=0.2,
+        random_state=42,
+    )
+    _, _, prediction_df = _random_forest_regression(
+        X_train,
+        X_test,
+        Y_train,
+        Y_test,
+        r_squared_only=False,
+    )
+    assert set(prediction_df.columns) == expected
+
+
+def test_gradient_boosting_regression_r_squared_only():
+    X, Y = make_regression(n_samples=100, n_features=2, noise=0.1)
+    X = pd.DataFrame(X, columns=["logincome", "age"])
+    Y = pd.Series(Y)
+    X_train, X_test, Y_train, Y_test = train_test_split(
+        X,
+        Y,
+        test_size=0.2,
+        random_state=42,
+    )
+    result = _gradient_boosting_regression(
+        X_train,
+        X_test,
+        Y_train,
+        Y_test,
+        r_squared_only=True,
+    )
+    assert 0 <= result <= 1
+
+
+def test_gradient_boosting_regression_full_output_length():
+    expected = 3
+    X, Y = make_regression(n_samples=100, n_features=2, noise=0.1)
+    X = pd.DataFrame(X, columns=["logincome", "age"])
+    Y = pd.Series(Y)
+    X_train, X_test, Y_train, Y_test = train_test_split(
+        X,
+        Y,
+        test_size=0.2,
+        random_state=42,
+    )
+    actual = _gradient_boosting_regression(
+        X_train,
+        X_test,
+        Y_train,
+        Y_test,
+        r_squared_only=False,
+    )
+    assert len(actual) == expected
+
+
+def test_gradient_boosting_regression_full_output_r_squared_df():
+    X, Y = make_regression(n_samples=100, n_features=2, noise=0.1)
+    X = pd.DataFrame(X, columns=["logincome", "age"])
+    Y = pd.Series(Y)
+    X_train, X_test, Y_train, Y_test = train_test_split(
+        X,
+        Y,
+        test_size=0.2,
+        random_state=42,
+    )
+    r_squared_df, _, _ = _gradient_boosting_regression(
+        X_train,
+        X_test,
+        Y_train,
+        Y_test,
+        r_squared_only=False,
+    )
+    assert "r_squared" in r_squared_df.columns
+
+
+def test_gradient_boosting_regression_full_output_perm_importance_df():
+    X, Y = make_regression(n_samples=100, n_features=2, noise=0.1)
+    X = pd.DataFrame(X, columns=["logincome", "age"])
+    Y = pd.Series(Y)
+    X_train, X_test, Y_train, Y_test = train_test_split(
+        X,
+        Y,
+        test_size=0.2,
+        random_state=42,
+    )
+    _, perm_importance_df, _ = _gradient_boosting_regression(
+        X_train,
+        X_test,
+        Y_train,
+        Y_test,
+        r_squared_only=False,
+    )
+    assert isinstance(perm_importance_df, pd.DataFrame)
+
+
+def test_gradient_boosting_regression_full_output_prediction_df():
+    expected = {"Y_pred", "logincome", "age", "income"}
+    X, Y = make_regression(n_samples=100, n_features=2, noise=0.1)
+    X = pd.DataFrame(X, columns=["logincome", "age"])
+    Y = pd.Series(Y)
+    X_train, X_test, Y_train, Y_test = train_test_split(
+        X,
+        Y,
+        test_size=0.2,
+        random_state=42,
+    )
+    _, _, prediction_df = _gradient_boosting_regression(
+        X_train,
+        X_test,
+        Y_train,
+        Y_test,
+        r_squared_only=False,
+    )
+    assert set(prediction_df.columns) == expected
