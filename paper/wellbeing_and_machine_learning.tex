@@ -76,9 +76,7 @@
 \maketitle
 
 
-\begin{abstract}
-    Some abstract here.
-\end{abstract}
+
 
 \clearpage
 
@@ -175,8 +173,15 @@ to some extent to the original paper.
 \subsection{Model performance}
 
 To evaluate the performance of the models, the $R^2$ score is used. Figure~\ref{fig:r_squared_algorithms}
-depicts the $R^2$ scores mean over the years 2010 to 2018 for the different models. The scores are
-comparable to the Figure 1 in the original paper.
+depicts the $R^2$ scores mean over the years 2010 to 2018 for the different models.The
+results are comparable to the Figure 1 Panel A in the original paper.
+
+In this figure, it is possible to see that the Random Forest and Gradient Boosting models
+do not outperform the OLS and Lasso models, in contrast to the original paper. The results
+are driven by the fact that the models are not optimized, and the hyperparameters are not
+tuned. When using grid search to find the optimal hyperparameters, the Random Forest and
+Gradient Boosting models outperform the OLS and Lasso models, as shown in the original paper.
+
 
 \begin{figure}[htbp]
     \centering
@@ -243,6 +248,22 @@ but specially for the Gradient Boosting model.
 
 \section{Discussion} % (fold)
 \label{sec:discussion}
+
+To some extent, the results of the models are comparable to the original paper. The models
+are able to predict wellbeing, and the most important variables are consistent across the
+models. However, the Random Forest and Gradient Boosting models do not outperform the OLS
+and Lasso models, as shown in the original paper. This is due to the fact that the models
+are not optimized, and the hyperparameters are not tuned.
+
+The most important explanatory variables used in the models are consistent with the original paper.
+The relationship between age and wellbeing is U-shaped, and the relationship between income and
+wellbeing is logarithmic.
+
+If the specific variables used in the original paper were available, the results would be
+more similar to the original paper. However, the SOEP data contains an extensive set of variables,
+and some of them are similar to each other. This demanded a careful examination of the variables
+and the data, which required a considerable amount of time.
+
 
 
 
