@@ -5,7 +5,7 @@ import pytask
 from pytask_latex import compilation_steps as cs
 from wellbeing_and_machine_learning.config import BLD, PAPER_DIR
 
-documents = ["wellbeing_and_machine_learning", "wellbeing_and_machine_learning_pres"]
+documents = ["wellbeing_and_machine_learning"]
 
 for document in documents:
 

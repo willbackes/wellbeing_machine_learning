@@ -175,8 +175,8 @@ to some extent to the original paper.
 \subsection{Model performance}
 
 To evaluate the performance of the models, the $R^2$ score is used. Figure~\ref{fig:r_squared_algorithms}
-depicts the $R^2$ scores for the different models. The scores are comparable to the Figure 1 in the
-original paper.
+depicts the $R^2$ scores mean over the years 2010 to 2018 for the different models. The scores are
+comparable to the Figure 1 in the original paper.
 
 \begin{figure}[htbp]
     \centering
@@ -188,9 +188,17 @@ original paper.
 
 \subsection{Variable importance}
 
-To assess the importance of the variables, the permutation importance is used. The results are
-shown in Table~\ref{tab:permutation_importance_table}. The table is comparable to the Table A5 in
-the original paper. The results show the 10 most-important variables for each model.
+To assess the importance of the variables, the permutation importance is used. This metric
+measures the degree to which each algorithm relies on each variable in making its predictions.
+The results are shown in Table~\ref{tab:permutation_importance_table}. The table is comparable
+to the Table A5 in the original paper, and the results show the 10 most-important variables
+for each model.
+
+Anayzing the results, it is possible to see that the most important variables are more or less
+consistent across the models, and definitely consistent with the original paper. The most
+important variables to predict wellbeing are: age and age squared, log household income,
+health and disability status.
+
 
 
 \begin{table}[htbp]
@@ -205,7 +213,17 @@ the original paper. The results show the 10 most-important variables for each mo
 
 Figure~\ref{fig:average_wellbeing_by_income} and Figure~\ref{fig:average_wellbeing_by_age} depict
 average predicted wellbeing for different levels of age and income, holding the other covariates
-constant.
+constant. Whether the relationship between age and wellbeing is U-shaped, and whether there is a
+satiation point beyond which income no longer yields wellbeing are two open and hotly debated questions.
+Tree-based algorithms freely estimate the most-appropriate functional forms. They are thus
+particularly well-suited to act as agnostic judges in these debates.
+
+The results are comparable to the Figure 3 Panel A in the original paper, and show that the
+relationship between age and wellbeing is U-shaped, specially for the OLS and Lasso models.
+For the Random Forest and Gradient Boosting models, the U-shape is not that evident, but the result
+is similar to the original paper. In terms of income, the relationship is logarithmic, and there
+is a point where the increase in income does not yield an increase in wellbeing for all models,
+but specially for the Gradient Boosting model.
 
 \begin{figure}[htbp]
     \centering
