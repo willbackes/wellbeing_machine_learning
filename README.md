@@ -66,10 +66,10 @@ VPN to this server:
 
 ```console
 \\home.wiwi.uni-bonn.de\home2$\dohmen_soep
-```
 
 User: (enter your user received via e-mail) Password: (enter your password received via
 e-mail)
+```
 
 If you have problems to access the server, add "neori" in front of your username.
 
