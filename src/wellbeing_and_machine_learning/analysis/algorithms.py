@@ -24,6 +24,10 @@ def algo_performance_by_year(data, algo):
         pd.DataFrame: A DataFrame with 'syear' and 'r_squared' columns.
 
     """
+    _fail_if_not_dataframe(data)
+    _fail_if_not_string(algo)
+    _fail_if_missing_columns(data)
+
     results = {"syear": [], "r_squared": []}
 
     for year in data["syear"].unique():
@@ -67,8 +71,7 @@ def algo_performance_by_year(data, algo):
                 r_squared_only=True,
             )
         else:
-            msg = f"Unknown algorithm: {algo}"
-            raise ValueError(msg)
+            _fail_if_unknown_algo(algo)
 
         results["syear"].append(year)
         results["r_squared"].append(r_squared)
@@ -92,6 +95,11 @@ def algo_performance_and_variable_importance(data, algo):
         dict: A dictionary with 'r_squared', 'permutation_importance', and 'prediction_df' keys.
 
     """
+    _fail_if_not_dataframe(data)
+    _fail_if_not_string(algo)
+    _fail_if_unknown_algo(algo)
+    _fail_if_missing_columns(data)
+
     results = {
         "r_squared": None,
         "permutation_importance": None,
@@ -145,8 +153,7 @@ def algo_performance_and_variable_importance(data, algo):
             r_squared_only=False,
         )
     else:
-        msg = f"Unknown algorithm: {algo}"
-        raise ValueError(msg)
+        _fail_if_unknown_algo(algo)
 
     return results
 
@@ -440,3 +447,31 @@ def _variable_importance(model, X_test, Y_test):
         {"variable_name": variable_name, "PI": perm_importance_values},
     )
     return perm_importance_df.sort_values(by="PI", ascending=False)
+
+
+def _fail_if_not_dataframe(data):
+    if not isinstance(data, pd.DataFrame):
+        msg = "data must be a pandas DataFrame"
+        raise TypeError(msg)
+    return data
+
+
+def _fail_if_not_string(algo):
+    if not isinstance(algo, str):
+        msg = "algo must be a string"
+        raise TypeError(msg)
+    return algo
+
+
+def _fail_if_unknown_algo(algo):
+    if algo not in ["ols", "lasso", "random_forest", "gradient_boosting"]:
+        msg = f"Unknown algorithm: {algo}"
+        raise ValueError(msg)
+    return algo
+
+
+def _fail_if_missing_columns(data):
+    if "syear" not in data.columns or "lifesatisfaction" not in data.columns:
+        msg = "data must contain 'syear' and 'lifesatisfaction' columns"
+        raise KeyError(msg)
+    return data
