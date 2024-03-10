@@ -26,8 +26,7 @@ analysis.
 
 a) Generate descriptive statistics for the variables of interest. b) Utilize the four
 algorithms to regress life satisfaction on the variables of interest. c) Compute
-performance metrics as R², Mean Squared Error (MSE), Mean Absolute Percentage Error, and
-Mean Absolute Error (MAE). d) Compare performance metrics across the different models.
+performance metrics as R². d) Compare performance metrics across the different models.
 
 ### Figures/Final Analysis
 
@@ -40,7 +39,10 @@ importance, and wellbeing patterns concerning age and income.
 a) Consider expanding the dataset by including other years for a more comprehensive
 analysis. b) Explore and apply additional machine learning algorithms beyond the ones
 mentioned in the original paper. c) Compare the performance of these new algorithms with
-those previously examined.
+those previously examined. As a considerable amount of time was spent on cleaning the
+data and selecting relevant variables, the additional part was disconsidered for this
+project and only the replication of the paper was maintained (the original code for this
+project was not available).
 
 ### References
 
