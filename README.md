@@ -63,31 +63,13 @@ $ conda/mamba env create
 $ conda activate wellbeing
 ```
 
-Before building the project and to use the SOEP data, please connect your computer via
-VPN to this server:
-
-```console
-\\home.wiwi.uni-bonn.de\home2$\dohmen_soep
-
-User: (enter your user received via e-mail) Password: (enter your password received via
-e-mail)
-```
-
-If you have problems to access the server, add "neori\\" in front of your username.
-
-Copy the file "SOEP_data.zip" from this server to the following project path:
-
-```console
-wellbeing_and_machine_learning\src\wellbeing_and_machine_learning\data
-```
-
-After copying the file to the above path, you are ready to build the project.
-
 To build the project, type
 
 ```console
 $ pytask
 ```
+
+The dataset is privately owned.
 
 ## Credits
 
